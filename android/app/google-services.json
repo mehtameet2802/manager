@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "800100980355",
+    "firebase_url": "https://manager-3ccd7-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "manager-3ccd7",
+    "storage_bucket": "manager-3ccd7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:800100980355:android:355b1efde1f02aa6bd2db6",
+        "android_client_info": {
+          "package_name": "com.example.manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "800100980355-j6u80vp62pp1ffig0m80o8jj450irfci.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBo921VQpojXiWs1_Un84YOrH3MSzgbu88"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "800100980355-j6u80vp62pp1ffig0m80o8jj450irfci.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
