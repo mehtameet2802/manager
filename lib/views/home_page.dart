@@ -91,14 +91,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      // drawer: Drawer(
-      //   child: Column(
-      //     children: const [
-      //       MyDrawerHeader(),
-      //       MyDrawerList(),
-      //     ],
-      //   ),
-      // ),
       drawer: Drawer(
         child: Column(
           children: const [

@@ -7,7 +7,9 @@ import 'package:manager/service/bloc/auth_bloc.dart';
 import 'package:manager/service/bloc/auth_event.dart';
 import 'package:manager/service/bloc/auth_state.dart';
 import 'package:manager/views/add_item_page.dart';
+import 'package:manager/views/history_page.dart';
 import 'package:manager/views/inventory_status_page.dart';
+import 'package:manager/views/transaction_page.dart';
 import 'package:manager/views/update_item_page.dart';
 import 'package:manager/views/home_page.dart';
 import 'package:manager/views/login_page.dart';
@@ -22,7 +24,7 @@ void main() {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]).then((value) => runApp(const MyApp()));
-  runApp(const MyApp());
+  // runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -48,6 +50,8 @@ class MyApp extends StatelessWidget {
         registerRoute: (context) => const RegisterPage(),
         updateItemRoute: (context) => const UpdateItem(),
         inventoryRoute: (context) => const InventoryStatusPage(),
+        transactionRoute: (context) => const TransactionPage(),
+        historyRoute: (context) => const HistoryPage(),
       },
     );
   }

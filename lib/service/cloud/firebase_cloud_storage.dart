@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:manager/service/cloud/cloud_item.dart';
+import 'package:manager/service/cloud/transaction_entry.dart';
 import 'cloud_constants.dart';
 
 class FirebaseCloudStorage {
@@ -11,22 +13,13 @@ class FirebaseCloudStorage {
   factory FirebaseCloudStorage() => _shared;
 
   final items = FirebaseFirestore.instance.collection('items');
+  final transactions = FirebaseFirestore.instance.collection('transactions');
 
   Stream<Iterable<CloudItem>> allItems() {
     final allItems = items
         .snapshots()
         .map((event) => event.docs.map((doc) => CloudItem.fromSnapshot(doc)));
     return allItems;
-  }
-
-  Future<Iterable<CloudItem>> downloadItems() async {
-    List<CloudItem> list = List.empty(growable: true);
-    items.snapshots().map((event) =>
-        event.docs.map((doc) => list.add(CloudItem.fromSnapshot(doc))));
-
-    // await items.get().then((value) =>
-    //     value.docs.map((doc) => list.add(CloudItem.fromSnapshot(doc))));
-    return list;
   }
 
   Stream<Iterable<CloudItem>> selectedItems() {
@@ -90,7 +83,7 @@ class FirebaseCloudStorage {
     }
   }
 
-  Future<CloudItem> getItem({required String documentId}) async {
+  Future<dynamic> getItem({required String documentId}) async {
     final doc = await items.doc(documentId).get();
     return CloudItem(
       documentId: doc[docId],
@@ -102,26 +95,26 @@ class FirebaseCloudStorage {
     );
   }
 
-  Future<bool> incrementStock(CloudItem item) async {
+  Future<bool> incrementStock(CloudItem item, int incrementBy) async {
     final cloudItem = CloudItem(
       documentId: item.documentId,
       itemName: item.itemName,
       cost: item.cost,
       minQuantity: item.minQuantity,
-      stock: item.stock + 1,
+      stock: item.stock + incrementBy,
       isLess: (item.stock < item.minQuantity) ? true : false,
     );
 
     return updateStock(item.documentId, cloudItem, "increment");
   }
 
-  Future<bool> decrementStock(CloudItem item) {
+  Future<bool> decrementStock(CloudItem item, int decrementBy) {
     final cloudItem = CloudItem(
       documentId: item.documentId,
       itemName: item.itemName,
       cost: item.cost,
       minQuantity: item.minQuantity,
-      stock: item.stock - 1,
+      stock: item.stock - decrementBy,
       isLess: (item.stock < item.minQuantity) ? true : false,
     );
 
@@ -131,5 +124,58 @@ class FirebaseCloudStorage {
   Future<bool> updateStock(String id, CloudItem item, String action) async {
     final bool val = await updateItem(id: id, item: item);
     return val;
+  }
+
+  Future<List<dynamic>> downloadItems() async {
+    List<dynamic> list = List.empty(growable: true);
+
+    QuerySnapshot query = await items.get();
+    final allData = query.docs.map((doc) => doc.data()).toList();
+    list = allData;
+
+    debugPrint("list = $list");
+    return list;
+  }
+
+  Future<bool> createTransaction(
+      {required TransactionEntry transaction}) async {
+    try {
+      final transact = await transactions.add({
+        name: transaction.itemName,
+        transId: transaction.transactionId,
+        finalStock: transaction.stock,
+        type: transaction.action,
+        transDateTime: transaction.dateTime,
+        updateBy: transaction.quantity,
+        buyingCost: transaction.itemCost,
+      });
+
+      final fetchedTransaction = await transact.get();
+
+      await transactions.doc(fetchedTransaction.id).update({
+        transId: fetchedTransaction.id,
+      });
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<List<dynamic>> downloadTransactions(DateTimeRange dateRange) async {
+    List<dynamic> list = List.empty(growable: true);
+    QuerySnapshot query = await transactions
+        .where(transDateTime,
+            isGreaterThanOrEqualTo: dateRange.start.millisecondsSinceEpoch.toString())
+        .where(transDateTime,
+            isLessThanOrEqualTo: dateRange.end.millisecondsSinceEpoch.toString())
+        .orderBy(transDateTime)
+        .get();
+    final allTransactions = query.docs.map((doc) => doc.data()).toList();
+    list = allTransactions;
+    debugPrint("start epoch = ${dateRange.start.millisecondsSinceEpoch}");
+    debugPrint("end epoch = ${dateRange.end.millisecondsSinceEpoch}");
+    debugPrint("transaction list = $list");
+    return list;
   }
 }

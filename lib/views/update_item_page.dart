@@ -99,18 +99,6 @@ class _UpdateItemState extends State<UpdateItem> {
                   ),
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-              //   child: TextFormField(
-              //     keyboardType: TextInputType.multiline,
-              //     decoration: InputDecoration(
-              //       prefixIcon: Icon(Icons.description),
-              //       border: OutlineInputBorder(
-              //           borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              //       hintText: 'Item Description',
-              //     ),
-              //   ),
-              // ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
                 child: TextFormField(
@@ -220,6 +208,7 @@ class _UpdateItemState extends State<UpdateItem> {
       (value) {
         if (value) {
           _item = item;
+          LoadingScreen().hide();
           Navigator.of(context).pop();
         } else {
           errorDialog(context, 'Could not update item');

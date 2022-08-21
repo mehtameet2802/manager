@@ -1,12 +1,13 @@
 import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:manager/service/pdf/api/pdf_api.dart';
+import 'package:manager/service/pdf/data/pdf_transaction.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import '../../../utilities/Utils.dart';
-import '../data/pdf_doc.dart';
 
-class PdfDocApi {
-  static Future<File> generate(PdfDoc doc) async {
+class PdfTransactionApi {
+  static Future<File> generate(PdfTransaction doc) async {
     final pdf = Document();
 
     pdf.addPage(
@@ -21,34 +22,53 @@ class PdfDocApi {
       ),
     );
     String datetime = DateTime.now().toString();
-    return PdfApi.savePdf(name: 'ManagerDoc_$datetime', pdf: pdf);
+    return PdfApi.savePdf(name: 'ManagerTransaction_$datetime', pdf: pdf);
   }
 
-  static Widget buildHeader(PdfDoc pdfDoc) => Column(
+  static Widget buildHeader(PdfTransaction pdfDoc) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             pdfDoc.header.heading,
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 0.8 * PdfPageFormat.cm),
           Text("User - ${pdfDoc.header.user}"),
-          SizedBox(height: 0.8 * PdfPageFormat.cm),
+          Text("Transaction Dates"),
+          Text("${pdfDoc.header.startDate} - ${pdfDoc.header.endDate}"),
+          SizedBox(
+            height: 0.8 * PdfPageFormat.cm,
+          ),
+          Text(
+            "Transaction Details",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
         ],
       );
 
-  static buildTable(PdfDoc pdfDoc) {
-    final headers = ['Item Name', 'Cost ', 'Minimum', 'In Stock', 'Total'];
+  static buildTable(PdfTransaction pdfDoc) {
+    final headers = [
+      'Item Name',
+      'Type ',
+      'Quant ',
+      'Cost ',
+      'Final Stock ',
+      'Date   ',
+      'Time   ',
+      'Total'
+    ];
 
-    final data = pdfDoc.allItems.map(
+    final data = pdfDoc.allTransactions.map(
       (item) {
-        final total = item.stock * item.cost;
-
+        final total = item.quantity * item.itemCost;
+        var dt = DateTime.fromMillisecondsSinceEpoch(int.parse(item.dateTime));
         return [
           item.itemName,
-          'Rs ${item.cost}',
-          '${item.minQuantity}',
+          item.action,
+          '${item.quantity}',
+          'Rs ${item.itemCost}',
           '${item.stock}',
+          DateFormat('dd/MM').format(dt),
+          DateFormat('HH:mm').format(dt),
           'Rs ${total.toStringAsFixed(2)}'
         ];
       },
@@ -64,16 +84,26 @@ class PdfDocApi {
       cellAlignments: {
         0: Alignment.centerLeft,
         1: Alignment.centerRight,
-        2: Alignment.centerRight,
+        2: Alignment.center,
         3: Alignment.centerRight,
-        4: Alignment.centerRight,
-        5: Alignment.centerRight,
+        4: Alignment.center,
+        5: Alignment.center,
+        6: Alignment.center,
+        7: Alignment.centerRight,
       },
     );
   }
 
-  static Widget buildTotal(PdfDoc pdfDoc) {
-    final total = pdfDoc.allItems.map((item) => item.stock * item.cost);
+  static Widget buildTotal(PdfTransaction pdfDoc) {
+    // final total = pdfDoc.allTransactions.map((item) => item.quantity * item.itemCost);
+    var total = 0;
+    pdfDoc.allTransactions.map((transaction) {
+      if (transaction.action == "Buy") {
+        total = total + (transaction.quantity * transaction.itemCost);
+      } else {
+        total = total - (transaction.quantity * transaction.itemCost);
+      }
+    });
     return Container(
       alignment: Alignment.centerRight,
       child: Row(
@@ -85,8 +115,8 @@ class PdfDocApi {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 buildText(
-                  title: 'Inventory Value',
-                  value: Utils.formatPrice(double.parse(total.first.toString())),
+                  title: 'Transaction Value',
+                  value: Utils.formatPrice(double.parse(total.toString())),
                   unite: true,
                 ),
               ],

@@ -64,13 +64,17 @@ class _ItemsListWidgetState extends State<ItemsListWidget> {
                           decrementStock(item);
                         },
                         icon: const Icon(Icons.remove)),
-                    Text(
-                      st.toString(),
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: (item.stock < item.minQuantity)
-                              ? Colors.red
-                              : Colors.black),
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        overflow: TextOverflow.ellipsis,
+                        st.toString(),
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: (item.stock < item.minQuantity)
+                                ? Colors.red
+                                : Colors.black),
+                      ),
                     ),
                     IconButton(
                         onPressed: () {

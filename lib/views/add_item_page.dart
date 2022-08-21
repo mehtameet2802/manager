@@ -79,18 +79,6 @@ class _AddItemState extends State<AddItem> {
                   },
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-              //   child: TextFormField(
-              //     keyboardType: TextInputType.multiline,
-              //     decoration: InputDecoration(
-              //       prefixIcon: Icon(Icons.description),
-              //       border: OutlineInputBorder(
-              //           borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              //       hintText: 'Item Description',
-              //     ),
-              //   ),
-              // ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
                 child: TextFormField(

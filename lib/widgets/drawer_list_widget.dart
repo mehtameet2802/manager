@@ -5,23 +5,19 @@ import 'package:manager/constants/routes.dart';
 import 'package:manager/service/bloc/auth_bloc.dart';
 import 'package:manager/service/bloc/auth_event.dart';
 import 'package:manager/utilities/dialogs/logout_dialog.dart';
+import 'package:manager/views/transaction_page.dart';
 import '../service/bloc/auth_bloc.dart';
-import '../service/cloud/firebase_cloud_storage.dart';
 
 class MyDrawerList extends StatefulWidget {
-  const MyDrawerList({Key? key})
-      : super(key: key);
+  const MyDrawerList({Key? key}) : super(key: key);
 
   @override
   State<MyDrawerList> createState() => _MyDrawerListState();
 }
 
 class _MyDrawerListState extends State<MyDrawerList> {
-  late final FirebaseCloudStorage itemService;
-
   @override
   void initState() {
-    // itemService = FirebaseCloudStorage();
     super.initState();
   }
 
@@ -68,6 +64,28 @@ Widget menuItem(BuildContext context) {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.currency_exchange),
+              title: Text(
+                'Transact',
+                style: GoogleFonts.lato(fontSize: 20),
+              ),
+              onTap: () async {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed(transactionRoute);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.history),
+              title: Text(
+                'History',
+                style: GoogleFonts.lato(fontSize: 20),
+              ),
+              onTap: () async {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed(historyRoute);
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.logout),
               title: Text(
                 'Logout',
@@ -87,67 +105,3 @@ Widget menuItem(BuildContext context) {
     ),
   );
 }
-
-// ListTile(
-//   leading: const Icon(Icons.download),
-//   title: Text(
-//     'Download All Items',
-//     style: GoogleFonts.lato(
-//       fontSize: 17,
-//     ),
-//   ),
-//   onTap: () async {
-//     Navigator.of(context).pop();
-//     // loadData(false);
-//     debugPrint("items length ${widget.items.length}");
-//     if (widget.items.isEmpty) {
-//       errorDialog(context, 'First add items');
-//     } else {
-//       LoadingScreen()
-//           .show(context: context, text: 'Downloading pdf');
-//       final doc = PdfDoc(
-//         allItems: widget.items,
-//         header: HeaderDoc(
-//           user: FirebaseAuth.instance.currentUser!.email
-//               .toString(),
-//           heading: 'All Items',
-//         ),
-//       );
-//       final pdf = await PdfDocApi.generate(doc);
-//       LoadingScreen().hide();
-//       PdfApi.openFile(pdf);
-//     }
-//   },
-// ),
-// ListTile(
-//   leading: const Icon(Icons.inventory),
-//   title: Text(
-//     'Download Low Items',
-//     style: GoogleFonts.lato(
-//       fontSize: 17,
-//     ),
-//   ),
-//   onTap: () async {
-//     // loadData(true);
-//     Navigator.of(context).pop();
-//     var list =
-//         widget.items.where((element) => element.isLess == true);
-//     if (list.isEmpty) {
-//       errorDialog(context, 'First add items');
-//     } else {
-//       LoadingScreen()
-//           .show(context: context, text: 'Downloading pdf');
-//       final doc = PdfDoc(
-//         allItems: list,
-//         header: HeaderDoc(
-//           user: FirebaseAuth.instance.currentUser!.email
-//               .toString(),
-//           heading: 'Required Items',
-//         ),
-//       );
-//       final pdf = await PdfDocApi.generate(doc);
-//       LoadingScreen().hide();
-//       PdfApi.openFile(pdf);
-//     }
-//   },
-// ),
