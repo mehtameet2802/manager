@@ -6,3 +6,4 @@ const updateItemRoute = '/update-item/';
 const inventoryRoute = '/low-stock-items/';
 const transactionRoute = '/transaction/';
 const historyRoute = '/history/';
+const uploadFileRoute = '/upload/';

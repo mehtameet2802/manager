@@ -14,6 +14,7 @@ import 'package:manager/views/update_item_page.dart';
 import 'package:manager/views/home_page.dart';
 import 'package:manager/views/login_page.dart';
 import 'package:manager/views/register_page.dart';
+import 'package:manager/views/upload_file_page.dart';
 import 'package:manager/views/verify_email_page.dart';
 import 'constants/routes.dart';
 
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
         inventoryRoute: (context) => const InventoryStatusPage(),
         transactionRoute: (context) => const TransactionPage(),
         historyRoute: (context) => const HistoryPage(),
+        uploadFileRoute: (context) => const UploadFilePage(),
       },
     );
   }

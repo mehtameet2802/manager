@@ -101,39 +101,42 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Stack(
         children: [
-          StreamBuilder(
-            stream: _itemService.allItems(),
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.waiting:
-                case ConnectionState.active:
-                  if (snapshot.hasData) {
-                    isNull = false;
-                    allItems = snapshot.data as Iterable<CloudItem>;
-                    return ItemsListWidget(
-                      items: (searchItems.length < allItems!.length &&
-                                  _search.text.isNotEmpty ||
-                              _search.text.isNotEmpty && searchItems.isEmpty)
-                          ? searchItems
-                          : allItems!,
-                      onTap: (item) {
-                        Navigator.of(context).pushNamed(
-                          updateItemRoute,
-                          arguments: item,
-                        );
-                      },
-                    );
-                  } else {
+          Padding(
+            padding: const EdgeInsets.only(bottom: 52),
+            child: StreamBuilder(
+              stream: _itemService.allItems(),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                  case ConnectionState.active:
+                    if (snapshot.hasData) {
+                      isNull = false;
+                      allItems = snapshot.data as Iterable<CloudItem>;
+                      return ItemsListWidget(
+                        items: (searchItems.length < allItems!.length &&
+                                    _search.text.isNotEmpty ||
+                                _search.text.isNotEmpty && searchItems.isEmpty)
+                            ? searchItems
+                            : allItems!,
+                        onTap: (item) {
+                          Navigator.of(context).pushNamed(
+                            updateItemRoute,
+                            arguments: item,
+                          );
+                        },
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  default:
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
-                  }
-                default:
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-              }
-            },
+                }
+              },
+            ),
           ),
           Positioned(
             bottom: 0,
